@@ -1,8 +1,8 @@
 ;; Home-row mods for the MacBook's built-in keyboard only; the Voyager does its
 ;; own in firmware, so it is deliberately not grabbed here.
 ;;
-;;   left hand:  s = ctrl   d = shift   f = alt
-;;   right hand: l = ctrl   k = shift   j = alt
+;;   left hand:  s = ctrl   d = shift   f = alt   v = cmd
+;;   right hand: l = ctrl   k = shift   j = alt   m = cmd
 ;;   caps:       tap = caps word, hold = fn layer (IJKL arrows etc.)
 ;;
 ;; Kanata re-emits keys through the Karabiner virtual keyboard, so the macOS
@@ -24,7 +24,7 @@
   (right 6 7 8 9 0 - = bspc y u i o p [ ] \ h j k l ; ' ret n m , . /))
 
 (defsrc
-  caps s d f j k l i u o h ;
+  caps s d f j k l i u o h ; v m
   fn bspc left right up down
   f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12
 )
@@ -38,29 +38,36 @@
 
 ;; Each home-row mod becomes a modifier only when a key on the other hand is
 ;; pressed AND released while it is held, so a cross-hand roll (k then e,
-;; with k released first) stays two letters. The same hand's other home-row mods are neutral and ignored, so a
-;; same-hand modifier chord (s+f = ctrl+alt for AeroSpace) waits for the
-;; opposite-hand key instead of collapsing into letters. Keys outside defhands
-;; (space, enter, cmd, ...) resolve the pending key as its letter.
+;; with k released first) stays two letters. The same hand's other home-row
+;; mods are neutral and ignored, so a same-hand modifier chord (s+f = ctrl+alt
+;; for AeroSpace) waits for the opposite-hand key instead of collapsing into
+;; letters. Keys outside defhands (space, enter, cmd, ...) resolve the pending
+;; key as its letter.
 (defalias
   s (tap-hold-opposite-hand-release $hold-time s lctl
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys d f) (unknown-hand tap))
+      (neutral-keys d f v) (unknown-hand tap))
   d (tap-hold-opposite-hand-release $hold-time d lsft
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys s f) (unknown-hand tap))
+      (neutral-keys s f v) (unknown-hand tap))
   f (tap-hold-opposite-hand-release $hold-time f lalt
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys s d) (unknown-hand tap))
+      (neutral-keys s d v) (unknown-hand tap))
+  v (tap-hold-opposite-hand-release $hold-time v lmet
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys s d f) (unknown-hand tap))
   j (tap-hold-opposite-hand-release $hold-time j ralt
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys k l) (unknown-hand tap))
+      (neutral-keys k l m) (unknown-hand tap))
   k (tap-hold-opposite-hand-release $hold-time k rsft
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys j l) (unknown-hand tap))
+      (neutral-keys j l m) (unknown-hand tap))
   l (tap-hold-opposite-hand-release $hold-time l rctl
       (timeout hold) (tap-repress-timeout $repress-time)
-      (neutral-keys j k) (unknown-hand tap))
+      (neutral-keys j k m) (unknown-hand tap))
+  m (tap-hold-opposite-hand-release $hold-time m rmet
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys j k l) (unknown-hand tap))
 
   ;; The fn layer as soon as another key is pressed (tap-hold-press), including
   ;; right after typing, so prior-idle is disabled for it. Unlike the real fn
@@ -83,13 +90,13 @@
 )
 
 (deflayer base
-  @caps @s @d @f @j   @k   @l    i  u    o    h    ;
+  @caps @s @d @f @j   @k   @l    i  u    o    h    ;    @v   @m
   @fn   bspc left right up   down
   f1    f2   f3   f4    f5   f6   f7   f8   f9   f10  f11  f12
 )
 
 (deflayer fn-layer
-  _     _  _  _  left down right up pgup pgdn bspc del
+  _     _  _  _  left down right up pgup pgdn bspc del  _    _
   _     del home end  pgup pgdn
   brdn  brup C-up _   _    _    prev pp   next mute vold volu
 )
