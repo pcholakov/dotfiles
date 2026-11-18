@@ -24,7 +24,8 @@ tiled. AeroSpace runs it from its focus, workspace and new-window callbacks.
 
 Home-row mods (S/D/F and L/K/J = Ctrl/Shift/Alt), Caps = tap caps word / hold
 Ctrl, and an Fn layer (Fn+IJKL arrows, Fn+Backspace delete, Fn+arrows
-Home/End/PgUp/PgDn). The Voyager does its own home-row mods and is not grabbed.
+Home/End/PgUp/PgDn, Fn+top row media keys; the top row is plain F1-F12).
+The Voyager does its own home-row mods and is not grabbed.
 
 Kanata 1.12 needs **Karabiner-DriverKit-VirtualHIDDevice v6.2.0**. Full
 Karabiner-Elements 16 ships a newer driver daemon (8.x) that Kanata can't talk
