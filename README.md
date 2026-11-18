@@ -23,7 +23,8 @@ tiled. AeroSpace runs it from its focus, workspace and new-window callbacks.
 ## Kanata (built-in MacBook keyboard only)
 
 Home-row mods (S/D/F and L/K/J = Ctrl/Shift/Alt) and an Fn layer reached by
-holding Fn or Caps: IJKL arrows, U/O PgUp/PgDn, Backspace delete, arrows
+holding Fn or Caps: IJKL arrows, U/O PgUp/PgDn, H backspace, ; delete,
+Backspace delete, arrows
 Home/End/PgUp/PgDn, top row media keys (plain top row is F1-F12). Tapping Caps
 starts caps word.
 The Voyager does its own home-row mods and is not grabbed.
