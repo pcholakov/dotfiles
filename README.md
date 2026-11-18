@@ -6,6 +6,8 @@ These are copies, not symlinks: `smart-gaps.sh` rewrites the Dell gap values in
 the live `~/.aerospace.toml` many times a day, so the committed config keeps
 them at 0. Copy changes back here after editing the live files.
 
+Key reference: [CHEATSHEET.md](CHEATSHEET.md).
+
 Install both tools with:
 
 ```
