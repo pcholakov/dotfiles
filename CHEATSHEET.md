@@ -59,7 +59,7 @@ toggle.
 
 - Dia windows get misdetected as floating; an `on-window-detected` rule forces
   tiling. Float small Dia popups with Mod + ; then F.
-- 1Password, Granola and Shottr windows always float.
+- 1Password, Granola, Shottr and OpenLogi windows always float.
 - Accordion piles windows with edge strips; if a workspace suddenly
   "overlaps", it's in accordion: Mod + / goes back to tiles.
 - After a restart, AeroSpace doesn't remember which window was on which

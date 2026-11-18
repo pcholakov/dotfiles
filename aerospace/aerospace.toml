@@ -126,6 +126,11 @@ exec-on-workspace-change = ['/bin/bash', '-c', '/Users/pavel/.config/aerospace/s
     check-further-callbacks = true
     run = 'layout floating'
 
+[[on-window-detected]]
+    if.app-id = 'org.openlogi.openlogi'
+    check-further-callbacks = true
+    run = 'layout floating'
+
 # Re-evaluate the Dell's lone-window gaps when a window appears.
 [[on-window-detected]]
     check-further-callbacks = true
