@@ -1,0 +1,85 @@
+;; Home-row mods for the MacBook's built-in keyboard only; the Voyager does its
+;; own in firmware, so it is deliberately not grabbed here.
+;;
+;;   left hand:  s = ctrl   d = shift   f = alt
+;;   right hand: l = ctrl   k = shift   j = alt
+;;   caps:       tap = caps word, hold = ctrl
+;;
+;; Kanata re-emits keys through the Karabiner virtual keyboard, so the macOS
+;; "Caps Lock -> Control" setting for the built-in keyboard no longer applies;
+;; caps is handled here instead.
+
+(defcfg
+  macos-dev-names-include ("Apple Internal Keyboard / Trackpad")
+  process-unmapped-keys yes
+  ;; A home-row key pressed within this many ms of another key is typing, so
+  ;; it resolves to its letter immediately (ZMK's require-prior-idle-ms).
+  tap-hold-require-prior-idle 150
+)
+
+;; The number row is included so modifier + number shortcuts count as
+;; opposite-hand (j+l+1 = ctrl+alt+1); unlisted keys resolve as letters.
+(defhands
+  (left  esc grv 1 2 3 4 5 tab q w e r t a s d f g z x c v b)
+  (right 6 7 8 9 0 - = bspc y u i o p [ ] \ h j k l ; ' ret n m , . /))
+
+(defsrc
+  caps s d f j k l i
+  fn bspc left right up down
+)
+
+(defvar
+  hold-time   200
+  ;; Tap a home-row key, then press and hold it again within this window to
+  ;; repeat the letter instead of getting the modifier (QMK quick-tap).
+  repress-time 200
+)
+
+;; Each home-row mod becomes a modifier only when a key on the other hand is
+;; pressed AND released while it is held, so a cross-hand roll (k then e,
+;; with k released first) stays two letters. The same hand's other home-row mods are neutral and ignored, so a
+;; same-hand modifier chord (s+f = ctrl+alt for AeroSpace) waits for the
+;; opposite-hand key instead of collapsing into letters. Keys outside defhands
+;; (space, enter, cmd, ...) resolve the pending key as its letter.
+(defalias
+  s (tap-hold-opposite-hand-release $hold-time s lctl
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys d f) (unknown-hand tap))
+  d (tap-hold-opposite-hand-release $hold-time d lsft
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys s f) (unknown-hand tap))
+  f (tap-hold-opposite-hand-release $hold-time f lalt
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys s d) (unknown-hand tap))
+  j (tap-hold-opposite-hand-release $hold-time j ralt
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys k l) (unknown-hand tap))
+  k (tap-hold-opposite-hand-release $hold-time k rsft
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys j l) (unknown-hand tap))
+  l (tap-hold-opposite-hand-release $hold-time l rctl
+      (timeout hold) (tap-repress-timeout $repress-time)
+      (neutral-keys j k) (unknown-hand tap))
+
+  ;; Ctrl as soon as another key is pressed (tap-hold-press), including right
+  ;; after typing, so prior-idle is disabled for it. Caps word ends on space,
+  ;; punctuation, or 5s idle (QMK's default idle timeout).
+  caps (tap-hold-press 200 $hold-time (caps-word 5000) lctl (require-prior-idle 0))
+
+  ;; macOS applies fn+key translations (fn+backspace = delete, fn+arrows =
+  ;; home/end/page) inside the built-in keyboard's own driver, so they are lost
+  ;; once kanata re-emits keys through the virtual keyboard. Re-create them
+  ;; here; fn itself is still sent for globe shortcuts. fn + IJKL are arrows,
+  ;; matching the Voyager's arrow layer.
+  fn (multi fn (layer-while-held fn-layer))
+)
+
+(deflayer base
+  @caps @s @d @f @j   @k   @l    i
+  @fn   bspc left right up   down
+)
+
+(deflayer fn-layer
+  _     _  _  _  left down right up
+  _     del home end  pgup pgdn
+)
